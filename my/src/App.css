@@ -1,0 +1,108 @@
+* {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.winLogOrReg {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .window {
+    color: white;
+    height: auto;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #3b8dd9;
+    padding: 25px;
+    border-radius: 15px;
+    .window__btn {
+      border: none;
+      background-color: #3b8dd9;
+      color: white;
+      cursor: pointer;
+      &:hover {
+        color: #dadada;
+      }
+    }
+  }
+}
+
+.App {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  overflow-x: hidden;
+  .App__btnsLinkBoard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 200px;
+    background-color: #3b8dd9;
+    gap: 15px;
+    border-right: 3px solid #3374b1;
+  }
+  .App__btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 50px;
+  }
+  .App__btn {
+    display: flex;
+    background-color: #2cba4d;
+    padding: 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: black;
+    &:active {
+      background-color: #27a143;
+    }
+    &:hover {
+      color: #dadada;
+    }
+  }
+  .App__userWin {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+  }
+  .App__userWinBtn {
+    border: none;
+    cursor: pointer;
+    background-color: #2cba4d;
+    border-radius: 4px;
+    padding: 8px;
+    width: 100px;
+    margin-top: 5px;
+    &:hover {
+      color: #dadada;
+    }
+  }
+  .App__renderWin {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .App__userWinUserName {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    &:hover {
+      color: #dadada;
+    }
+  }
+}

@@ -1,0 +1,181 @@
+.mainPage {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.mainPage__header {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  width: 95%;
+  height: 150px;
+  background-color: #3b8dd9;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 15px;
+  gap: 10px;
+  align-items: center;
+}
+
+.mainPage__addNewsWin {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  z-index: 3;
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translateX(50%) translateY(-50%);
+  background-color: #347ec2;
+  padding: 30px;
+  border-radius: 14px;
+  .mainPage__addNewsWinInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 4px;
+  }
+  .mainPage__addNewsWinInp {
+    height: 25px;
+    &.text{
+      padding: 5px 5px 280px 5px
+    }
+  }
+}
+.mainPage__addNewsWinBtn {
+  margin-top: 15px;
+  background-color: #2cba4d;
+  padding: 10px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  &:active {
+    background-color: #27a143;
+  }
+  &:hover{
+    color: #c8c8c8;
+  }
+  &.header{
+    margin-left: auto;
+  }
+}
+.mainPage__addNewsWinBackground {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #00000085;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.mainPage__news {
+  width: 95%;
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.mainPage__newsCard {
+  display: flex;
+  flex-direction: column;
+  overflow-wrap: break-word;
+  width: 31%;
+  min-width: 300px;
+  min-height: 100px;
+  height: 30vh;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #28aa46;
+
+  .mainPage__newsCardHeader {
+    margin-bottom: 15px;
+    color: white;
+  }
+  .mainPage__newsCardText {
+    margin-bottom: 5px;
+    width: 100%;
+    color: white;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 9;
+    -webkit-box-orient: vertical;
+  }
+  .mainPage__newsCardDate {
+    margin-bottom: 30px;
+    color: #c8c8c8;
+  }
+  .mainPage__newsCardBtns {
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  .mainPage__newsCardBtn {
+    border: none;
+    background-color: #3b8dd9;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 25px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    &:hover {
+      color: #c8c8c8;
+    }
+    &:active {
+      background-color: #347ec2;
+    }
+  }
+}
+
+.mainPage__backgroundModalWin {
+  width: 100%;
+  height: 100vh;
+  background-color: #00000085;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.mainPage__modalWin {
+  width: 33%;
+  height: 100vh;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #347ec2;
+  border-left: 5px solid #3374b1;
+  z-index: 3;
+  .mainPage__modalWinText {
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    display: flex;
+    overflow-wrap: break-word;
+  }
+  .mainPage__modalWinBtn {
+    background-color: #2cba4d;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    margin-left: 15px;
+    cursor: pointer;
+    width: 95%;
+    &:active {
+      background-color: #27a143;
+    }
+    &:hover {
+      color: #c8c8c8;
+    }
+  }
+}

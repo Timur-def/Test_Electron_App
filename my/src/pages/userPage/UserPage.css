@@ -1,0 +1,18 @@
+.userPage{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.userPage__header{
+    color: white;
+    width: 95%;
+    height: 200px;
+    background-color: #3b8dd9;
+    display: flex;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 15px;
+    flex-direction: column;
+    gap: 10px;
+}

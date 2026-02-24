@@ -1,0 +1,43 @@
+.registrationPage {
+  height: auto;
+  max-width: 350px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.registrationPage__inputs {
+  width: 18vw;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.registrationPage__btnReg {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #28a745;
+  color: "white";
+  border: none;
+  border-radius: 4px;
+  color: white;
+  &:active {
+    background-color: #218b3a;
+  }
+  &:hover {
+    color: #dadada;
+  }
+}
+.registrationPage__inp {
+  padding: 5px;
+}
+.registrationPage__viewPasswordWin{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.registrationPage__viewPasswordWinP{
+    font-size: 14px;
+    cursor: pointer;
+}
