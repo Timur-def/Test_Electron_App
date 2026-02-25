@@ -197,7 +197,7 @@ export default function MainPage({ userRole }) {
                   className="mainPage__addNewsWinBtn"
                   onClick={() => (
                     handleAddNews(),
-                    error ? setIsModalWinAddNews(true) : ""
+                    error ? setIsModalWinAddNews(true) : setIsModalWinAddNews(false)
                   )}
                 >
                   Добавить новость
