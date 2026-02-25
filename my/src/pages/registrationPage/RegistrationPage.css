@@ -17,13 +17,13 @@
 .registrationPage__btnReg {
   cursor: pointer;
   padding: 10px;
-  background-color: #28a745;
+  background-color: #556ee6;
   color: "white";
   border: none;
   border-radius: 4px;
   color: white;
   &:active {
-    background-color: #218b3a;
+    background-color: #4b63d7;  
   }
   &:hover {
     color: #dadada;

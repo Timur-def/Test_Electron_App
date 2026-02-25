@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #414853;
   .window {
     color: white;
     height: auto;
@@ -17,14 +18,14 @@
     justify-content: center;
     flex-direction: column;
     gap: 20px;
-    background-color: #3b8dd9;
+    background-color: #778beb;
     padding: 25px;
     border-radius: 15px;
     .window__btn {
       border: none;
-      background-color: #3b8dd9;
       color: white;
       cursor: pointer;
+      background-color: #778beb;
       &:hover {
         color: #dadada;
       }
@@ -46,9 +47,9 @@
     flex-direction: column;
     height: 100vh;
     width: 200px;
-    background-color: #3b8dd9;
+    background-color: #778beb;
     gap: 15px;
-    border-right: 3px solid #3374b1;
+    border-right: 3px solid #5f6fbd;
   }
   .App__btns {
     display: flex;
@@ -60,13 +61,13 @@
   }
   .App__btn {
     display: flex;
-    background-color: #2cba4d;
+    background-color: #556ee6;
     padding: 10px;
     border-radius: 4px;
     text-decoration: none;
-    color: black;
+    color: white;
     &:active {
-      background-color: #27a143;
+      background-color: #4b63d7;
     }
     &:hover {
       color: #dadada;
@@ -81,13 +82,17 @@
   .App__userWinBtn {
     border: none;
     cursor: pointer;
-    background-color: #2cba4d;
+    background-color: #556ee6;
     border-radius: 4px;
     padding: 8px;
     width: 100px;
     margin-top: 5px;
+    color: white;
     &:hover {
       color: #dadada;
+    }
+    &:active{
+      background-color: #4b63d7;
     }
   }
   .App__renderWin {
@@ -96,10 +101,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #414853;
   }
   .App__userWinUserName {
     text-decoration: none;
-    color: black;
+    color: white;
     cursor: pointer;
     &:hover {
       color: #dadada;

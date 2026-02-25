@@ -12,7 +12,7 @@
   color: white;
   width: 95%;
   height: 150px;
-  background-color: #3b8dd9;
+  background-color: #778beb;
   padding: 15px;
   margin-top: 15px;
   border-radius: 15px;
@@ -29,7 +29,7 @@
   right: 50%;
   top: 50%;
   transform: translateX(50%) translateY(-50%);
-  background-color: #347ec2;
+  background-color: #778beb;
   padding: 30px;
   border-radius: 14px;
   .mainPage__addNewsWinInputs {
@@ -47,14 +47,15 @@
 }
 .mainPage__addNewsWinBtn {
   margin-top: 15px;
-  background-color: #2cba4d;
+  background-color: #556ee6;
   padding: 10px;
   height: 40px;
   border-radius: 4px;
   border: none;
   cursor: pointer;
+  color: white;
   &:active {
-    background-color: #27a143;
+    background-color: #4b63d7;
   }
   &:hover{
     color: #c8c8c8;
@@ -92,7 +93,7 @@
   height: 30vh;
   padding: 10px;
   border-radius: 8px;
-  background-color: #28aa46;
+  background-color: #8FBC8F;
 
   .mainPage__newsCardHeader {
     margin-bottom: 15px;
@@ -119,7 +120,7 @@
   }
   .mainPage__newsCardBtn {
     border: none;
-    background-color: #3b8dd9;
+    background-color: #556ee6;
     color: white;
     border-radius: 4px;
     cursor: pointer;
@@ -133,7 +134,7 @@
       color: #c8c8c8;
     }
     &:active {
-      background-color: #347ec2;
+      background-color: #4b63d7;
     }
   }
 }
@@ -153,8 +154,8 @@
   position: absolute;
   right: 0;
   top: 0;
-  background-color: #347ec2;
-  border-left: 5px solid #3374b1;
+  background-color: #778beb;
+  border-left: 5px solid #5f6fbd;
   z-index: 3;
   .mainPage__modalWinText {
     color: white;
@@ -164,7 +165,7 @@
     overflow-wrap: break-word;
   }
   .mainPage__modalWinBtn {
-    background-color: #2cba4d;
+    background-color: #556ee6;
     padding: 10px;
     border-radius: 4px;
     border: none;
@@ -172,10 +173,10 @@
     cursor: pointer;
     width: 95%;
     &:active {
-      background-color: #27a143;
+      background-color: #4b63d7;
     }
     &:hover {
-      color: #c8c8c8;
+      color: #dadada;
     }
   }
 }
