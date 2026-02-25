@@ -31,7 +31,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 800,
-    show: false, 
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
@@ -39,9 +39,9 @@ function createWindow() {
     },
   });
   const VITE_URL = "http://localhost:5173";
-  win.loadURL(VITE_URL)
+  win.loadURL(VITE_URL);
   win.once("ready-to-show", () => {
-    win.show();      
+    win.show();
     win.webContents.openDevTools();
   });
   win.webContents.on("did-fail-load", () => {
@@ -51,15 +51,13 @@ function createWindow() {
     }, 2000);
   });
 }
-
-ipcMain.handle("get-users", async () => {
-  const users = await User.find().lean();
+ipcMain.handle("getUsersGuest", async () => {
+  const users = await User.find({ role: "guest" }).lean();
   return users.map((user) => ({
     ...user,
     _id: user._id.toString(),
   }));
 });
-
 
 ipcMain.handle("login", async (event, { login, password }) => {
   try {
@@ -84,6 +82,27 @@ ipcMain.handle("login", async (event, { login, password }) => {
   }
 });
 
+ipcMain.handle("changeRole", async (event, { login, role }) => {
+  try {
+    const user = await User.findOne({ login });
+    if (!user) {
+      return { success: false, error: "Пользователь не найден" };
+    }
+    if (user.role !== role) {
+      user.role = role;
+      await user.save();
+      const safeUser = user.toObject(); 
+      safeUser._id = safeUser._id.toString(); 
+      delete safeUser.password; 
+      return { success: true, user: safeUser };
+    } else {
+      return { success: false, error: "У пользователя уже установлена эта роль" };
+    }
+  } catch (err) {
+    console.error(err); 
+    return { success: false, error: "Ошибка сервера базы данных" };
+  }
+});
 
 ipcMain.handle("register", async (event, data) => {
   try {
@@ -91,7 +110,7 @@ ipcMain.handle("register", async (event, data) => {
     const newUser = new User({
       ...data,
       password: hashedPassword,
-      role: "visitor",
+      role: "guest",
     });
     const saved = await newUser.save();
 
@@ -104,6 +123,27 @@ ipcMain.handle("register", async (event, data) => {
   }
 });
 
+ipcMain.handle(
+  "changePassword",
+  async (event, { login, oldPassword, newPassword }) => {
+    try {
+      const user = await User.findOne({ login });
+      if (!user) {
+        return { error: "Пользователь не найден" };
+      }
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (isMatch) {
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+        return { success: true };
+      } else {
+        return { success: false, error: "Неверный старый пароль" };
+      }
+    } catch (err) {
+      return { success: false, error: "Ошибка сервера базы данных" };
+    }
+  },
+);
 
 ipcMain.handle("addNews", async (event, data) => {
   try {
@@ -119,7 +159,7 @@ ipcMain.handle("addNews", async (event, data) => {
 
 ipcMain.handle("deleteNews", async (event, data) => {
   try {
-    const id = typeof data === 'object' ? data.id : data;
+    const id = typeof data === "object" ? data.id : data;
     if (!id) {
       return { success: false, error: "ID не предоставлен" };
     }

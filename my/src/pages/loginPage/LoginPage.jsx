@@ -16,7 +16,7 @@ export default function LoginPage({ onLoginSuccess }) {
       const result = await window.api.login(form);
 
       if (result && result.success) {
-        console.log("Успешный вход:");
+        console.log("Успешный вход");
         if (onLoginSuccess) {
           onLoginSuccess(result.user);
         }

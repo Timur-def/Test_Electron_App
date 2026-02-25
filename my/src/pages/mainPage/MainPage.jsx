@@ -110,15 +110,13 @@ export default function MainPage({ userRole }) {
             <p className="mainPage__newsCardText">{item.text}</p>
             <p className="mainPage__newsCardDate">{item.date}</p>
             <div className="mainPage__newsCardBtns">
-              {userRole === "admin" ? (
+              {userRole === "admin" && (
                 <button
                   className="mainPage__newsCardBtn"
                   onClick={() => handleDeleteNews(item._id)}
                 >
                   Удалить новость
                 </button>
-              ) : (
-                <></>
               )}
               <button
                 className="mainPage__newsCardBtn"
@@ -130,7 +128,7 @@ export default function MainPage({ userRole }) {
           </div>
         ))}
       </div>
-      {isModalWinText ? (
+      {isModalWinText && (
         <>
           <div
             className="mainPage__backgroundModalWin"
@@ -154,12 +152,10 @@ export default function MainPage({ userRole }) {
             </button>
           </div>
         </>
-      ) : (
-        <></>
       )}
-      {userRole === "admin" ? (
+      {userRole === "admin" && (
         <>
-          {isModalWinAddNews ? (
+          {isModalWinAddNews && (
             <>
               <div
                 className="mainPage__addNewsWinBackground"
@@ -197,7 +193,9 @@ export default function MainPage({ userRole }) {
                   className="mainPage__addNewsWinBtn"
                   onClick={() => (
                     handleAddNews(),
-                    error ? setIsModalWinAddNews(true) : setIsModalWinAddNews(false)
+                    error
+                      ? setIsModalWinAddNews(true)
+                      : setIsModalWinAddNews(false)
                   )}
                 >
                   Добавить новость
@@ -210,12 +208,8 @@ export default function MainPage({ userRole }) {
                 </button>
               </div>
             </>
-          ) : (
-            <></>
           )}
         </>
-      ) : (
-        <></>
       )}
     </div>
   );

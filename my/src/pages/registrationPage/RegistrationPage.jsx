@@ -12,7 +12,7 @@ export default function RegistrationPage({ onRegisterSuccess }) {
       return setError("Введите имя, логин и пароль");
     }
     if (form.password.split('').length < 8) {
-      return setError("Пароль должен быть 8 или более симолов");
+      return setError("Пароль должен быть более 8 симолов");
     }
     try {
       const result = await window.api.register(form);
@@ -33,20 +33,20 @@ export default function RegistrationPage({ onRegisterSuccess }) {
       <div className="registrationPage__inputs">
         <input
           className="registrationPage__inp"
-          placeholder="Ваше имя"
+          placeholder="Имя"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value.trim() })}
         />
         <input
           className="registrationPage__inp"
-          placeholder="Придумайте логин"
+          placeholder="Логин"
           value={form.login}
           onChange={(e) => setForm({ ...form, login: e.target.value.trim() })}
         />
         <input
           className="registrationPage__inp"
           type={isViewPassword ? "text" : "password"}
-          placeholder="Придумайте пароль"
+          placeholder="Пароль"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value.trim() })}
         />
