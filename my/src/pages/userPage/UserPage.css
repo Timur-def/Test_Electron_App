@@ -1,25 +1,199 @@
-.userPage{
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+.userPage {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
-.userPage__header{
+.userPage__header {
+  width: 95%;
+  height: 100px;
+  background-color: #778beb;
+  display: flex;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 15px;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+.userPage__usersGuestDiv {
+  width: 200px;
+  margin-left: auto;
+  height: 30px;
+  background-color: #556ee6;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: white;
+  &:active {
+    background-color: #4b63d7;
+  }
+  &:hover {
+    color: #dadada;
+  }
+}
+
+.userPage__modalWinGuestUsersBackGround {
+  width: 100%;
+  height: 100vh;
+  background-color: #00000085;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.userPage__modalWinGuestUsers {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  z-index: 3;
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translateX(50%) translateY(-50%);
+  background-color: #778beb;
+  padding: 30px;
+  border-radius: 14px;
+  max-height: 500px;
+}
+
+.userPage__userInf{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.userPage__modalWinGuestUsersTable{
+  height: 95%;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+
+
+.userPage__winUsersGuestCard{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 90%;
+    height: 150px;
+    border-bottom: 1px solid #dadada;
+    margin-bottom: 20px;
+}
+
+.userPage__winUsersGuestCardName{
     color: white;
-    width: 95%;
-    height: 200px;
-    background-color: #778beb;
-    display: flex;
-    padding: 15px;
-    margin-top: 15px;
-    border-radius: 15px;
-    flex-direction: column;
-    gap: 10px;
+    font-size:20px;
 }
-.userPage__winChangePassword{
+
+.userPage__winUsersGuestCardLogin{
+    color: #dadada;
+}
+
+.userPage__winUsersGuestCardSelect{
+    margin-top: 25px;
+    background-color: #556ee6;
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.userPage__winUsersGuestCardSelect option {
+  background-color: #556ee6;           
+  padding: 10px;  
+}
+
+.userPage__winUsersGuestCardBtn {
+  border: none;
+  height: 30px;
+  background-color: #556ee6;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: white;
+  &:active {
+    background-color: #4b63d7;
+  }
+  &:hover {
+    color: #dadada;
+  }
+}
+
+.userPage__winUsersGuest{
     display: flex;
+    gap: 30px;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.userPage__modalWinGuestUsersBtn {
+  height: 30px;
+  background-color: #556ee6;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  &:active {
+    background-color: #4b63d7;
+  }
+  &:hover {
+    color: #dadada;
+  }
+}
+.userPage__winChangePassword {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+}
+.userPage__winChangePasswordInp{
+  padding: 10px;
+}
+.userPage__winChangePasswordBtn{
+  height: 30px;
+  background-color: #556ee6;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  &:active {
+    background-color: #4b63d7;
+  }
+  &:hover {
+    color: #dadada;
+  }
+}
+.userPage__accountAction{
+   width: 95%;
+  height:200px;
+  background-color: #778beb;
+  display: flex;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 15px;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
 }

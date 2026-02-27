@@ -91,21 +91,28 @@ ipcMain.handle("changeRole", async (event, { login, role }) => {
     if (user.role !== role) {
       user.role = role;
       await user.save();
-      const safeUser = user.toObject(); 
-      safeUser._id = safeUser._id.toString(); 
-      delete safeUser.password; 
+      const safeUser = user.toObject();
+      safeUser._id = safeUser._id.toString();
+      delete safeUser.password;
       return { success: true, user: safeUser };
     } else {
-      return { success: false, error: "У пользователя уже установлена эта роль" };
+      return {
+        success: false,
+        error: "У пользователя уже установлена эта роль",
+      };
     }
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     return { success: false, error: "Ошибка сервера базы данных" };
   }
 });
 
 ipcMain.handle("register", async (event, data) => {
   try {
+    const existingUser = await User.findOne({ login: data.login });
+    if (existingUser) {
+      return { error: "Этот логин уже занят. Выберите другой." };
+    }
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const newUser = new User({
       ...data,
@@ -113,13 +120,13 @@ ipcMain.handle("register", async (event, data) => {
       role: "guest",
     });
     const saved = await newUser.save();
-
     const obj = saved.toObject();
     obj._id = obj._id.toString();
     delete obj.password;
     return obj;
   } catch (e) {
-    return { error: "Логин занят или ошибка базы" };
+    console.error("Ошибка регистрации:", e);
+    return { error: "Ошибка сервера при регистрации" };
   }
 });
 

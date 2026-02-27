@@ -54,6 +54,7 @@ export default function UserPage({ user }) {
       if (result && result.success) {
         console.log("Успешное утверждение роли");
         setUsers((prev) => prev.filter((u) => u.login !== login));
+        setSelectValue("user");
       } else {
         setError(result.error || "Ошибка");
       }
@@ -86,64 +87,135 @@ export default function UserPage({ user }) {
   return (
     <div className="userPage">
       <div className="userPage__header">
-        <h2>
-          {user.name} ({user.login})
-        </h2>
-        <p>
-          Вы {user.role === "admin" && "Администратор"}
-          {user.role === "user" && "Посетитель"}
-          {user.role === "guest" &&
-            "Гость. Дождитесь, когда Администратор подтвердит ваш аккаунт"}
-        </p>
-      </div>
-      <div className="userPage__winChangePassword">
-        <input
-          type="text"
-          value={form.oldPassword}
-          onChange={(e) =>
-            setForm({ ...form, oldPassword: e.target.value.trim() })
-          }
-          placeholder="Ваш старый пароль"
-        />
-        <input
-          type="text"
-          value={form.newPassword}
-          onChange={(e) =>
-            setForm({ ...form, newPassword: e.target.value.trim() })
-          }
-          placeholder="Ваш новый пароль"
-        />
-        {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
-        {res && (
-          <p style={{ color: "white", fontSize: "14px" }}>Password changed</p>
+        <div className="userPage__userInf">
+          <h2 style={{ color: "white" }}>
+            {user.name} <span style={{ color: "white" }}>({user.login})</span>
+          </h2>
+          <p style={{ color: "white" }}>
+            Вы {user.role === "admin" && "Администратор"}
+            {user.role === "user" && "Посетитель"}
+            {user.role === "guest" &&
+              "Гость. Дождитесь, когда Администратор подтвердит ваш аккаунт"}
+          </p>
+        </div>
+        {user.role === "admin" && (
+          <div className="userPage__usersGuestDiv">
+            {users.length == 0 ? (
+              <p>Заявок нет</p>
+            ) : (
+              <>
+                <p onClick={() => setIsModalWinGuestUsers(true)}>
+                  Посмотреть <span>{users.length}</span>
+                  {users.length == 1 && <span> заявка</span>}
+                  {users.length <= 4 && users.length > 1 && (
+                    <span> заявки</span>
+                  )}
+                  {users.length > 4 && <span> заявок</span>}
+                </p>
+              </>
+            )}
+          </div>
         )}
-        <button onClick={handleChangePassword}>Сменить пароль</button>
       </div>
+      {user.role !== "guest" && (
+        <div className="userPage__accountAction">
+          <div className="userPage__winChangePassword">
+          <p style={{color:'white'}}>Окно смены пароля</p>
+            <input
+              type="text"
+              value={form.oldPassword}
+              onChange={(e) =>
+                setForm({ ...form, oldPassword: e.target.value.trim() })
+              }
+              placeholder="Ваш старый пароль"
+              className="userPage__winChangePasswordInp"
+            />
+            <input
+              type="text"
+              value={form.newPassword}
+              onChange={(e) =>
+                setForm({ ...form, newPassword: e.target.value.trim() })
+              }
+              placeholder="Ваш новый пароль"
+              className="userPage__winChangePasswordInp"
+            />
+            {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
+            {res && (
+              <p style={{ color: "white", fontSize: "14px" }}>Пароль изменён</p>
+            )}
+            <button
+              className="userPage__winChangePasswordBtn"
+              onClick={handleChangePassword}
+            >
+              Сменить пароль
+            </button>
+          </div>
+        </div>
+      )}
+
       {user.role === "admin" && (
-        <div className="userPage__winUsersGuest">
-          {users.map((item) => {
-            return (
-              <div className="userPage__winUsersGuestCard" key={item._id}>
-                <p className="userPage__winUsersGuestCardName">{item.name}</p>
-                <p className="userPage__winUsersGuestCardLogin">{item.login}</p>
-                <select
-                  value={selectValue}
-                  onChange={(e) => {
-                    setSelectValue(e.target.value);
-                  }}
-                >
-                  <option value="user">Пользователь</option>
-                  <option value="admin">Администратор</option>
-                </select>
+        <>
+          {isModalWinGuestUsers && (
+            <>
+              <div className="userPage__modalWinGuestUsersBackGround" onClick={()=>setIsModalWinGuestUsers(false)}/>
+              <div className="userPage__modalWinGuestUsers">
+                <div className="userPage__modalWinGuestUsersTable">
+                  <div className="userPage__winUsersGuest">
+                    {users.map((item) => {
+                      return (
+                        <div
+                          className="userPage__winUsersGuestCard"
+                          key={item._id}
+                        >
+                          <p className="userPage__winUsersGuestCardName">
+                            {item.name}
+                          </p>
+                          <p className="userPage__winUsersGuestCardLogin">
+                            {item.login}
+                          </p>
+                          <select
+                            className="userPage__winUsersGuestCardSelect"
+                            value={selectValue}
+                            onChange={(e) => {
+                              setSelectValue(e.target.value);
+                            }}
+                          >
+                            <option
+                              value="user"
+                              className="userPage__winUsersGuestCardSelectOption"
+                            >
+                              Пользователь
+                            </option>
+                            <option
+                              value="admin"
+                              className="userPage__winUsersGuestCardSelectOption"
+                            >
+                              Администратор
+                            </option>
+                          </select>
+                          <button
+                            onClick={() =>
+                              handleChangeRole(item.login, selectValue)
+                            }
+                            className="userPage__winUsersGuestCardBtn"
+                          >
+                            Утвердить роль
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
                 <button
-                  onClick={() => handleChangeRole(item.login, selectValue)}
+                  className="userPage__modalWinGuestUsersBtn"
+                  onClick={() => setIsModalWinGuestUsers(false)}
                 >
-                  Утвердить роль
+                  Выйти
                 </button>
               </div>
-            );
-          })}
-        </div>
+            </>
+          )}
+        </>
       )}
     </div>
   );
