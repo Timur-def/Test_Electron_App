@@ -10,9 +10,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [view, setView] = useState("login");
   
-  // Функция для выхода
   const handleLogout = () => setCurrentUser(null);
-  // 1. Если пользователь НЕ вошел — показываем только формы
+
+
   if (!currentUser) {
     return (
       <div className="winLogOrReg">
@@ -38,7 +38,7 @@ function App() {
       </div>
     );
   }
-  // 2. Если пользователь ВОШЕЛ — показываем основной интерфейс
+
   return (
     <div className="App">
       <div className="App__btnsLinkBoard">
@@ -55,7 +55,7 @@ function App() {
       <div className="App__renderWin">
         <Routes>
           <Route path="/" element={<MainPage userRole={currentUser.role}/>} />
-          <Route path="/userPage" element={<UserPage user={currentUser}/>} />
+          <Route path="/userPage" element={<UserPage user={currentUser} setCurrentUser={setCurrentUser}/>} />
         </Routes>
       </div>
     </div>

@@ -157,16 +157,16 @@
     color: #dadada;
   }
 }
-.userPage__winChangePassword {
+.userPage__winChange {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 15px;
 }
-.userPage__winChangePasswordInp{
+.userPage__winChangeInp{
   padding: 10px;
 }
-.userPage__winChangePasswordBtn{
+.userPage__winChangeBtn{
   height: 30px;
   background-color: #556ee6;
   padding: 10px;

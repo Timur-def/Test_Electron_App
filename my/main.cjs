@@ -152,6 +152,44 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle("changeName", async (event, { login, newName, password }) => {
+  try {
+    const user = await User.findOne({ login });
+    if (!user) {
+      return { error: "Пользователь не найден" };
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      user.name = newName;
+      await user.save();
+      return { success: true, newName: user.name };
+    } else {
+      return { success: false, error: "Неверный пароль" };
+    }
+  } catch (err) {
+    return { success: false, error: "Ошибка сервера базы данных" };
+  }
+});
+
+ipcMain.handle("changeLogin", async (event, { login, newLogin, password }) => {
+  try {
+    const user = await User.findOne({ login });
+    if (!user) {
+      return { error: "Пользователь не найден" };
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      user.login = newLogin;
+      await user.save();
+      return { success: true, newLogin: user.login };
+    } else {
+      return { success: false, error: "Неверный пароль" };
+    }
+  } catch (err) {
+    return { success: false, error: "Ошибка сервера базы данных" };
+  }
+});
+
 ipcMain.handle("addNews", async (event, data) => {
   try {
     const newNews = new News({ ...data });

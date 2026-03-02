@@ -1,36 +1,56 @@
 import { useEffect, useState } from "react";
 import "./UserPage.css";
+import Message from "../../components/message/Message";
 
-export default function UserPage({ user }) {
-  const [form, setForm] = useState({
+export default function UserPage({ user, setCurrentUser }) {
+  const [formChangePassword, setFormChangePassword] = useState({
     login: user?.login,
     oldPassword: "",
     newPassword: "",
   });
+  const [formChangeName, setFormChangeName] = useState({
+    login: user?.login,
+    password: "",
+    newName: "",
+  });
+  const [formChangeLogin, setFormChangeLogin] = useState({
+    login: user?.login,
+    password: "",
+    newLogin: "",
+  });
   const [error, setError] = useState("");
-  const [res, setRes] = useState(false);
+  const [updateMess, setUpdateMess] = useState(false);
+  const [textMess, setTextMess] = useState("");
   const [users, setUsers] = useState([]);
   const [isModalWinGuestUsers, setIsModalWinGuestUsers] = useState(false);
   const [selectValue, setSelectValue] = useState("user");
 
   const handleChangePassword = async () => {
     if (!window.api) return;
-    if (!form.login || !form.oldPassword) {
-      return setError("Введите новый пароль и старый пароль");
+    if (!formChangePassword.newPassword || !formChangePassword.oldPassword) {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      setError("Введите новый пароль и старый пароль");
+      return;
     }
-    if (form.newPassword.split("").length < 8) {
-      return setError("Пароль должен быть более 8 симолов");
+    if (formChangePassword.newPassword.split("").length < 8) {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      setError("Пароль должен быть более 8 симолов");
+      return;
     }
-    if (form.newPassword === form.oldPassword) {
-      return setError("Пароль не должен быть точь в точь, как старый");
+    if (formChangePassword.newPassword === formChangePassword.oldPassword) {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      setError("Пароль не должен быть точь в точь, как старый");
+      return;
     }
     try {
       setError("");
-      const result = await window.api.changePassword(form);
+      const result = await window.api.changePassword(formChangePassword);
       if (result && result.success) {
-        console.log("Успешная смена пароля");
-        setRes(true);
-        setForm({
+        setTextMess("Успешная смена пароля");
+        setFormChangePassword({
           login: user?.login,
           oldPassword: "",
           newPassword: "",
@@ -39,28 +59,104 @@ export default function UserPage({ user }) {
         setError(result.error || "Неверный старый пароль");
       }
     } catch (err) {
-      console.error("Ошибка:", err);
       setError("Ошибка соединения с базой");
+    } finally {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false),4000);
     }
   };
-  const handleChangeRole = async (login, role) => {
+
+  const handleChangeName = async () => {
     if (!window.api) return;
-    if (!login || !role) {
-      return setError("Проверьте данные");
+    if (!formChangeName.newName || !formChangeName.password) {
+      setError("Введите пароль и новое имя");
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      return;
+    }
+    try {
+      setTextMess("");
+      setError("");
+      const result = await window.api.changeName(formChangeName);
+      if (result && result.success) {
+        setTextMess("Успешная смена имени");
+        setCurrentUser((prev) => ({
+          ...prev,
+          name: result.newName,
+        }));
+        setFormChangeName({
+          login: user?.login,
+          password: "",
+          newName: "",
+        });
+      } else {
+        setError(result.error || "Неверный пароль");
+      }
+    } catch (err) {
+      setError("Ошибка соединения с базой");
+    } finally {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+    }
+  };
+  const handleChangeLogin = async () => {
+    if (!window.api) return;
+    if (!formChangeLogin.newLogin || !formChangeLogin.password) {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 3000);
+      setError("Введите пароль и новый логин");
+      return
     }
     try {
       setError("");
+      setTextMess('')
+      const result = await window.api.changeLogin(formChangeLogin);
+      if (result && result.success) {
+        setTextMess("Успешная смена логина");
+        setCurrentUser((prev) => ({
+          ...prev,
+          login: result.newLogin,
+        }));
+        setFormChangeLogin({
+          login: user?.login,
+          password: "",
+          newLogin: "",
+        });
+      } else {
+        setError(result.error || "Неверный пароль");
+      }
+    } catch (err) {
+      setError("Ошибка соединения с базой");
+    }finally {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 5000);
+    }
+  };
+
+  const handleChangeRole = async (login, role) => {
+    if (!window.api) return;
+    if (!login || !role) {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      setError("Проверьте данные");
+      return
+    }
+    try {
+      setTextMess('')
+      setError("");
       const result = await window.api.changeRole({ login, role });
       if (result && result.success) {
-        console.log("Успешное утверждение роли");
+        setTextMess("Успешное утверждение роли");
         setUsers((prev) => prev.filter((u) => u.login !== login));
         setSelectValue("user");
       } else {
         setError(result.error || "Ошибка");
       }
     } catch (err) {
-      console.error("Ошибка:", err);
       setError("Ошибка соединения с базой");
+    }finally {
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
     }
   };
 
@@ -119,35 +215,103 @@ export default function UserPage({ user }) {
       </div>
       {user.role !== "guest" && (
         <div className="userPage__accountAction">
-          <div className="userPage__winChangePassword">
-          <p style={{color:'white'}}>Окно смены пароля</p>
+          <div className="userPage__winChange">
+            <p style={{ color: "white" }}>Окно смены пароля</p>
             <input
               type="text"
-              value={form.oldPassword}
+              value={formChangePassword.oldPassword}
               onChange={(e) =>
-                setForm({ ...form, oldPassword: e.target.value.trim() })
+                setFormChangePassword({
+                  ...formChangePassword,
+                  oldPassword: e.target.value.trim(),
+                })
               }
               placeholder="Ваш старый пароль"
-              className="userPage__winChangePasswordInp"
+              className="userPage__winChangeInp"
             />
             <input
               type="text"
-              value={form.newPassword}
+              value={formChangePassword.newPassword}
               onChange={(e) =>
-                setForm({ ...form, newPassword: e.target.value.trim() })
+                setFormChangePassword({
+                  ...formChangePassword,
+                  newPassword: e.target.value.trim(),
+                })
               }
               placeholder="Ваш новый пароль"
-              className="userPage__winChangePasswordInp"
+              className="userPage__winChangeInp"
             />
-            {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
-            {res && (
-              <p style={{ color: "white", fontSize: "14px" }}>Пароль изменён</p>
-            )}
             <button
-              className="userPage__winChangePasswordBtn"
+              className="userPage__winChangeBtn"
               onClick={handleChangePassword}
             >
               Сменить пароль
+            </button>
+          </div>
+          <div className="userPage__winChange">
+            <p style={{ color: "white" }}>Окно смены имени</p>
+            <input
+              type="text"
+              value={formChangeName.newName}
+              onChange={(e) =>
+                setFormChangeName({
+                  ...formChangeName,
+                  newName: e.target.value.trim(),
+                })
+              }
+              placeholder="Ваше новое имя"
+              className="userPage__winChangeInp"
+            />
+            <input
+              type="text"
+              value={formChangeName.password}
+              onChange={(e) =>
+                setFormChangeName({
+                  ...formChangeName,
+                  password: e.target.value.trim(),
+                })
+              }
+              placeholder="Ваш пароль"
+              className="userPage__winChangeInp"
+            />
+            <button
+              className="userPage__winChangeBtn"
+              onClick={handleChangeName}
+            >
+              Сменить имя
+            </button>
+          </div>
+          <div className="userPage__winChange">
+            <p style={{ color: "white" }}>Окно смены логина</p>
+            <input
+              type="text"
+              value={formChangeLogin.newLogin}
+              onChange={(e) =>
+                setFormChangeLogin({
+                  ...formChangeLogin,
+                  newLogin: e.target.value.trim(),
+                })
+              }
+              placeholder="Ваш новый логин"
+              className="userPage__winChangeInp"
+            />
+            <input
+              type="text"
+              value={formChangeLogin.password}
+              onChange={(e) =>
+                setFormChangeLogin({
+                  ...formChangeLogin,
+                  password: e.target.value.trim(),
+                })
+              }
+              placeholder="Ваш пароль"
+              className="userPage__winChangeInp"
+            />
+            <button
+              className="userPage__winChangeBtn"
+              onClick={handleChangeLogin}
+            >
+              Сменить логин
             </button>
           </div>
         </div>
@@ -157,7 +321,10 @@ export default function UserPage({ user }) {
         <>
           {isModalWinGuestUsers && (
             <>
-              <div className="userPage__modalWinGuestUsersBackGround" onClick={()=>setIsModalWinGuestUsers(false)}/>
+              <div
+                className="userPage__modalWinGuestUsersBackGround"
+                onClick={() => setIsModalWinGuestUsers(false)}
+              />
               <div className="userPage__modalWinGuestUsers">
                 <div className="userPage__modalWinGuestUsersTable">
                   <div className="userPage__winUsersGuest">
@@ -216,6 +383,12 @@ export default function UserPage({ user }) {
             </>
           )}
         </>
+      )}
+      {updateMess && (
+        <Message
+          text={error ? error : textMess}
+          type={error ? "error" : "notErr"}
+        />
       )}
     </div>
   );

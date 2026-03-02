@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld("api", {
   addNews: (data) => ipcRenderer.invoke("addNews", data),
   deleteNews: (data) => ipcRenderer.invoke("deleteNews", data),
   changePassword: (data) => ipcRenderer.invoke("changePassword", data),
+  changeName: (data) => ipcRenderer.invoke("changeName", data),
+  changeLogin: (data) => ipcRenderer.invoke("changeLogin", data),
   changeRole: (data) => ipcRenderer.invoke("changeRole", data),
   getNews: () => ipcRenderer.invoke("get-news"),
 });
