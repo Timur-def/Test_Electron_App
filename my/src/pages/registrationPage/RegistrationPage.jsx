@@ -2,23 +2,23 @@ import { useState } from "react";
 import "./RegistrationPage.css";
 
 export default function RegistrationPage({ onRegisterSuccess }) {
-  const [form, setForm] = useState({ name: "", login: "", password: "" });
+  const [form, setForm] = useState({ name: "", login: "", password: "" }); // подготовили состояния
   const [error, setError] = useState("");
   const [isViewPassword, setIsViewPassword] = useState(false);
 
   const handleRegister = async () => {
     if (!window.api) return;
-    if (!form.login || !form.password || !form.name) {
+    if (!form.login || !form.password || !form.name) { //проверка все ли данные введены
       return setError("Введите имя, логин и пароль");
     }
-    if (form.password.split('').length < 8) {
+    if (form.password.split('').length < 8) {  //проверка на длину пароля
       return setError("Пароль должен быть более 8 симолов");
     }
     try {
       const result = await window.api.register(form);
-      if (result && !result.error) {
-        onRegisterSuccess(result);
-      } else {
+      if (result && result.success) { // коректный ли результат и состояние "успех"
+        onRegisterSuccess(result.user);
+    } else {
         setError(result.error || "Ошибка регистрации");
       }
     } catch (err) {

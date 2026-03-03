@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
 import "./MainPage.css";
+import Message from "../../components/message/Message";
 
 export default function MainPage({ userRole }) {
   const [time, setTime] = useState(new Date());
   const [header, setHeader] = useState("");
   const [text, setText] = useState("");
-  const day = time.getDate();
-  const month = time.getMonth() + 1;
-  const year = time.getFullYear();
   const [newsArr, setNewsArr] = useState([]);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(false);
   const [isModalWinText, setIsModalWinText] = useState(false);
   const [modalWinNews, setModalWinNews] = useState({});
   const [isModalWinAddNews, setIsModalWinAddNews] = useState(false);
   const [error, setError] = useState("");
+  const [updateMess, setUpdateMess] = useState(false);
+  const [textMess, setTextMess] = useState("");
+  const [countUpdateMess, setCountUpdateMess] = useState(0);
+  const day = time.getDate();
+  const month = time.getMonth() + 1;
+  const year = time.getFullYear();
 
   const openModalWin = (obj) => {
     setModalWinNews(obj);
@@ -21,37 +25,41 @@ export default function MainPage({ userRole }) {
   };
 
   useEffect(() => {
-    let isMounted = true;
+    let isPerformOperation = true;
     const fetchNews = async () => {
       try {
         const data = await window.api.getNews();
-        if (isMounted) {
+        if (isPerformOperation) {
           if (Array.isArray(data)) {
-            console.log("ОК");
+            console.log("Данные загружены");
             setNewsArr(data);
           } else if (data && data.error) {
             console.error("Ошибка:", data.error);
           } else {
-            console.warn("Получены некорректные данные:", data);
+            console.error("Получены некорректные данные:", data);
             setNewsArr([]);
           }
         }
       } catch (err) {
-        if (isMounted) {
+        if (isPerformOperation) {
           console.error("Критическая ошибка:", err);
         }
       }
     };
     fetchNews();
     return () => {
-      isMounted = false;
+      isPerformOperation = false;
     };
   }, [count]);
 
   const handleAddNews = async () => {
     if (!window.api) return;
     if (!header || !text) {
-      return setError("Введите заголовок и содержание новости");
+      setCountUpdateMess((prev) => prev + 1);
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
+      setError("Введите заголовок и содержание новости");
+      return;
     }
     try {
       const result = await window.api.addNews({
@@ -60,16 +68,20 @@ export default function MainPage({ userRole }) {
         date: `${day}.${month < 10 ? `0${month}` : month}.${year}`,
       });
       if (result) {
-        console.log("OK");
+        setTextMess("Новость добавлена");
         setError("");
-        setCount((prev) => prev + 1);
-        setText("");
+        setCount((prev) => !prev);
+        setText("")
         setHeader("");
       } else {
         setError(result.error || "Ошибка");
       }
     } catch (err) {
       console.error("Ошибка при входе:", err);
+    } finally {
+      setCountUpdateMess((prev) => prev + 1);
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
     }
   };
 
@@ -78,13 +90,17 @@ export default function MainPage({ userRole }) {
     try {
       const result = await window.api.deleteNews({ id });
       if (result && result.success) {
-        console.log("Удалено успешно");
-        setCount((prev) => prev + 1);
+        setTextMess("Удалено успешно");
+        setCount((prev) => !prev);
       } else {
         console.error(result.error || "Ошибка при удалении");
       }
     } catch (err) {
       console.error("Ошибка:", err);
+    } finally {
+      setCountUpdateMess((prev) => prev + 1);
+      setUpdateMess(true);
+      setTimeout(() => setUpdateMess(false), 4000);
     }
   };
 
@@ -92,15 +108,13 @@ export default function MainPage({ userRole }) {
     <div className="mainPage">
       <div className="mainPage__header">
         <h1>Новости сайта и основная информация</h1>
-        {userRole === "admin" ? (
+        {userRole === "admin" && (
           <button
             className="mainPage__addNewsWinBtn header"
             onClick={() => setIsModalWinAddNews(true)}
           >
             Добавить новость
           </button>
-        ) : (
-          <></>
         )}
       </div>
       <div className="mainPage__news">
@@ -170,7 +184,7 @@ export default function MainPage({ userRole }) {
                     value={header}
                     onChange={(e) => setHeader(e.target.value)}
                   />
-                  <input
+                  <textarea
                     className="mainPage__addNewsWinInp text"
                     type="text"
                     placeholder="Содержание новости"
@@ -186,9 +200,6 @@ export default function MainPage({ userRole }) {
                     }}
                   />
                 </div>
-                {error && (
-                  <p style={{ color: "red", fontSize: "14px" }}>{error}</p>
-                )}
                 <button
                   className="mainPage__addNewsWinBtn"
                   onClick={() => (
@@ -202,7 +213,7 @@ export default function MainPage({ userRole }) {
                 </button>
                 <button
                   className="mainPage__addNewsWinBtn"
-                  onClick={() => (setIsModalWinAddNews(false), setError(""))}
+                  onClick={() => (setIsModalWinAddNews(false), setError(""), setText(""), setHeader(''))}
                 >
                   Выйти
                 </button>
@@ -210,6 +221,13 @@ export default function MainPage({ userRole }) {
             </>
           )}
         </>
+      )}
+      {updateMess && (
+        <Message
+          key={countUpdateMess}
+          text={error ? error : textMess}
+          type={error ? "error" : "notErr"}
+        />
       )}
     </div>
   );

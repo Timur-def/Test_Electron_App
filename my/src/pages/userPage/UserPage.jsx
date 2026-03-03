@@ -24,22 +24,26 @@ export default function UserPage({ user, setCurrentUser }) {
   const [users, setUsers] = useState([]);
   const [isModalWinGuestUsers, setIsModalWinGuestUsers] = useState(false);
   const [selectValue, setSelectValue] = useState("user");
+  const [countUpdateMess, setCountUpdateMess] = useState(0);
 
   const handleChangePassword = async () => {
     if (!window.api) return;
     if (!formChangePassword.newPassword || !formChangePassword.oldPassword) {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
       setError("Введите новый пароль и старый пароль");
       return;
     }
     if (formChangePassword.newPassword.split("").length < 8) {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
       setError("Пароль должен быть более 8 симолов");
       return;
     }
     if (formChangePassword.newPassword === formChangePassword.oldPassword) {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
       setError("Пароль не должен быть точь в точь, как старый");
@@ -47,7 +51,7 @@ export default function UserPage({ user, setCurrentUser }) {
     }
     try {
       setError("");
-      const result = await window.api.changePassword(formChangePassword);
+      const result = await window.api.changePassword({...formChangePassword, login:user.login});
       if (result && result.success) {
         setTextMess("Успешная смена пароля");
         setFormChangePassword({
@@ -61,23 +65,24 @@ export default function UserPage({ user, setCurrentUser }) {
     } catch (err) {
       setError("Ошибка соединения с базой");
     } finally {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
-      setTimeout(() => setUpdateMess(false),4000);
+      setTimeout(() => setUpdateMess(false), 4000);
     }
   };
 
   const handleChangeName = async () => {
     if (!window.api) return;
     if (!formChangeName.newName || !formChangeName.password) {
+      setCountUpdateMess((prev) => prev + 1);
       setError("Введите пароль и новое имя");
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
       return;
     }
     try {
-      setTextMess("");
       setError("");
-      const result = await window.api.changeName(formChangeName);
+      const result = await window.api.changeName({...formChangeName, login:user.login});
       if (result && result.success) {
         setTextMess("Успешная смена имени");
         setCurrentUser((prev) => ({
@@ -95,6 +100,7 @@ export default function UserPage({ user, setCurrentUser }) {
     } catch (err) {
       setError("Ошибка соединения с базой");
     } finally {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
     }
@@ -102,15 +108,15 @@ export default function UserPage({ user, setCurrentUser }) {
   const handleChangeLogin = async () => {
     if (!window.api) return;
     if (!formChangeLogin.newLogin || !formChangeLogin.password) {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 3000);
       setError("Введите пароль и новый логин");
-      return
+      return;
     }
     try {
       setError("");
-      setTextMess('')
-      const result = await window.api.changeLogin(formChangeLogin);
+      const result = await window.api.changeLogin({...formChangeLogin, login:user.login});
       if (result && result.success) {
         setTextMess("Успешная смена логина");
         setCurrentUser((prev) => ({
@@ -127,7 +133,8 @@ export default function UserPage({ user, setCurrentUser }) {
       }
     } catch (err) {
       setError("Ошибка соединения с базой");
-    }finally {
+    } finally {
+      setCountUpdateMess((prev) => prev + 1);
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 5000);
     }
@@ -139,10 +146,10 @@ export default function UserPage({ user, setCurrentUser }) {
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
       setError("Проверьте данные");
-      return
+      return;
     }
     try {
-      setTextMess('')
+      setTextMess("");
       setError("");
       const result = await window.api.changeRole({ login, role });
       if (result && result.success) {
@@ -154,7 +161,7 @@ export default function UserPage({ user, setCurrentUser }) {
       }
     } catch (err) {
       setError("Ошибка соединения с базой");
-    }finally {
+    } finally {
       setUpdateMess(true);
       setTimeout(() => setUpdateMess(false), 4000);
     }
@@ -386,6 +393,7 @@ export default function UserPage({ user, setCurrentUser }) {
       )}
       {updateMess && (
         <Message
+          key={countUpdateMess}
           text={error ? error : textMess}
           type={error ? "error" : "notErr"}
         />

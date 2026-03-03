@@ -2,24 +2,21 @@ import { useState } from "react";
 import "./LoginPage.css";
 
 export default function LoginPage({ onLoginSuccess }) {
-  const [form, setForm] = useState({ login: "", password: "" });
+  const [form, setForm] = useState({ login: "", password: "" }); // подготовили состояния
   const [error, setError] = useState("");
   const [isViewPassword, setIsViewPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!window.api) return;
     if (!form.login || !form.password) {
+      //проверка все ли данные введены
       return setError("Введите логин и пароль");
     }
     try {
       setError("");
       const result = await window.api.login(form);
-
-      if (result && result.success) {
-        console.log("Успешный вход");
-        if (onLoginSuccess) {
-          onLoginSuccess(result.user);
-        }
+      if (result && result.success) {// коректный ли результат и состояние "успех"
+        onLoginSuccess(result.user);
       } else {
         setError(result.error || "Неверный логин или пароль");
       }
@@ -44,7 +41,9 @@ export default function LoginPage({ onLoginSuccess }) {
           type={isViewPassword ? "text" : "password"}
           placeholder="Пароль"
           value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value.trim() })}
+          onChange={(e) =>
+            setForm({ ...form, password: e.target.value.trim() })
+          }
         />
         {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
         <div className="loginPage__viewPasswordWin">

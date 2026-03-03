@@ -3,7 +3,7 @@ import "./Message.css";
 export default function Message({ text, type }) {
   return (
     <div
-      className={`messageBox`}
+      className="messageBox"
       style={
         type == "error"
           ? { backgroundColor: "red" }

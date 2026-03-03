@@ -17,7 +17,6 @@ const User = mongoose.model(
     role: String,
   }),
 );
-
 const News = mongoose.model(
   "News",
   new mongoose.Schema({
@@ -26,8 +25,10 @@ const News = mongoose.model(
     date: String,
   }),
 );
+// добавление модели Пользователей и Новостей
 
-function createWindow() {
+
+function createWindow() { // создаём окно и настраиваем его
   const win = new BrowserWindow({
     width: 1000,
     height: 800,
@@ -51,7 +52,8 @@ function createWindow() {
     }, 2000);
   });
 }
-ipcMain.handle("getUsersGuest", async () => {
+
+ipcMain.handle("getUsersGuest", async () => { // получаем всех Пользователей со значение guest
   const users = await User.find({ role: "guest" }).lean();
   return users.map((user) => ({
     ...user,
@@ -59,19 +61,40 @@ ipcMain.handle("getUsersGuest", async () => {
   }));
 });
 
-ipcMain.handle("login", async (event, { login, password }) => {
+ipcMain.handle("register", async (event, { name, login, password }) => { // регистрация
+  try {
+    const existingUser = await User.findOne({ login: login });
+    if (existingUser) {
+      return { error: "Этот логин уже занят. Выберите другой." };
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      name: name,
+      login:login,
+      password: hashedPassword,
+      role: "guest",
+    });
+    const saved = await newUser.save();
+    const user = saved.toObject();
+    user._id = user._id.toString();
+    delete user.password;
+    return { success: true, user:user }; // отдаём "успех" и объект на фронт-энд
+  } catch (err) {
+    console.error("Ошибка регистрации:", err);
+    return { success: false, error: "Ошибка сервера при регистрации" };
+  }
+});
+
+ipcMain.handle("login", async (event, { login, password }) => { // вход в аккаунт
   try {
     const user = await User.findOne({ login });
-
     if (!user) {
       return { success: false, error: "Пользователь не найден" };
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-
+    const isMatch = await bcrypt.compare(password, user.password); // проверка на совпадение паролей 
     if (isMatch) {
       const safeUser = user.toObject();
       delete safeUser.password;
-
       safeUser._id = safeUser._id.toString();
       return { success: true, user: safeUser };
     } else {
@@ -82,7 +105,7 @@ ipcMain.handle("login", async (event, { login, password }) => {
   }
 });
 
-ipcMain.handle("changeRole", async (event, { login, role }) => {
+ipcMain.handle("changeRole", async (event, { login, role }) => { // смена поля role у Пользователей 
   try {
     const user = await User.findOne({ login });
     if (!user) {
@@ -107,32 +130,9 @@ ipcMain.handle("changeRole", async (event, { login, role }) => {
   }
 });
 
-ipcMain.handle("register", async (event, data) => {
-  try {
-    const existingUser = await User.findOne({ login: data.login });
-    if (existingUser) {
-      return { error: "Этот логин уже занят. Выберите другой." };
-    }
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const newUser = new User({
-      ...data,
-      password: hashedPassword,
-      role: "guest",
-    });
-    const saved = await newUser.save();
-    const obj = saved.toObject();
-    obj._id = obj._id.toString();
-    delete obj.password;
-    return obj;
-  } catch (e) {
-    console.error("Ошибка регистрации:", e);
-    return { error: "Ошибка сервера при регистрации" };
-  }
-});
-
 ipcMain.handle(
   "changePassword",
-  async (event, { login, oldPassword, newPassword }) => {
+  async (event, { login, oldPassword, newPassword }) => { // смена пароля у Пользователя 
     try {
       const user = await User.findOne({ login });
       if (!user) {
@@ -152,7 +152,7 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle("changeName", async (event, { login, newName, password }) => {
+ipcMain.handle("changeName", async (event, { login, newName, password }) => { // смена имени у Пользователя 
   try {
     const user = await User.findOne({ login });
     if (!user) {
@@ -171,7 +171,7 @@ ipcMain.handle("changeName", async (event, { login, newName, password }) => {
   }
 });
 
-ipcMain.handle("changeLogin", async (event, { login, newLogin, password }) => {
+ipcMain.handle("changeLogin", async (event, { login, newLogin, password }) => {// смена логина у Пользователя 
   try {
     const user = await User.findOne({ login });
     if (!user) {
@@ -190,7 +190,7 @@ ipcMain.handle("changeLogin", async (event, { login, newLogin, password }) => {
   }
 });
 
-ipcMain.handle("addNews", async (event, data) => {
+ipcMain.handle("addNews", async (event, data) => {// добавление новости
   try {
     const newNews = new News({ ...data });
     const saved = await newNews.save();
@@ -202,7 +202,7 @@ ipcMain.handle("addNews", async (event, data) => {
   }
 });
 
-ipcMain.handle("deleteNews", async (event, data) => {
+ipcMain.handle("deleteNews", async (event, data) => { // удаление новости
   try {
     const id = typeof data === "object" ? data.id : data;
     if (!id) {
@@ -225,7 +225,7 @@ ipcMain.handle("deleteNews", async (event, data) => {
   }
 });
 
-ipcMain.handle("get-news", async () => {
+ipcMain.handle("get-news", async () => {// получение списка новостей
   const newsArr = await News.find().lean();
   return newsArr.map((news) => ({
     ...news,
